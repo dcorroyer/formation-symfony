@@ -13,6 +13,7 @@ class Calculator
      * constructor of the logger
      *
      * @param LoggerInterface $logger
+     * @param float $tva
      */
     public function __construct(LoggerInterface $logger, float $tva)
     {

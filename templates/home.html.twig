@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+  Accueil
+{% endblock title %}
+
+{% block body %}
+{#  <h1>Ca marche ! <i class="fas fa-check"></i></h1> #}
+  <h1>Nos produits phares</h1>
+  <div class="row">
+    {% for i in 1..3 %}
+      <div class="col">
+        <div class="card">
+          <img src="https://picsum.photos/400/400" class="img-fluid" alt="Image du produit">
+          <div class="card-body">
+            <h4 class="card-title">Superbe Chaise Gaming</h4>
+            <p class="card-text">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Facere, aut!</p>
+            <a href="#" class="btn btn-primary btn-sm">Détails</a>
+            <a href="#" class="btn btn-success btn-sm">Ajouter</a>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+  <hr>
+  <h2>Un service irreprochable</h2>
+  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias aut dolorum enim harum nisi quibusdam!</p>
+
+  <div class="row">
+    {% include 'shared/_insurance.html.twig' with {
+      'color': 'primary',
+      'icon': 'truck',
+      'text': 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci cum ex harum illum iusto labore!'
+    } %}
+    {% include 'shared/_insurance.html.twig' with {
+      'color': 'success',
+      'icon': 'check',
+      'text': 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci cum ex harum illum iusto labore!'
+    } %}
+    {% include 'shared/_insurance.html.twig' with {
+      'color': 'warning',
+      'icon': 'lock',
+      'text': 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci cum ex harum illum iusto labore!'
+    } %}
+  </div>
+{% endblock body %}
