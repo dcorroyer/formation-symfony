@@ -2,18 +2,28 @@
 
 namespace App\Controller;
 
+//use App\Entity\Category;
+//use App\Entity\Product;
+use App\Form\ProductType;
 use App\Repository\CategoryRepository;
 use App\Repository\ProductRepository;
+use Doctrine\ORM\EntityManagerInterface;
+//use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\MoneyType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
+//use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+//use Symfony\Component\Form\Extension\Core\Type\FormType;
+//use Symfony\Component\Form\Extension\Core\Type\MoneyType;
+//use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+//use Symfony\Component\Form\Extension\Core\Type\TextType;
+//use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 //use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\String\Slugger\SluggerInterface;
+
+//use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class ProductController extends AbstractController
 {
@@ -74,55 +84,107 @@ class ProductController extends AbstractController
      * @Route("/admin/product/create", name="product_create")
      *
      * @param FormFactoryInterface $factory
-     * @param CategoryRepository $categoryRepository
+//   * @param CategoryRepository $categoryRepository
+     * @param Request $request
+     * @param SluggerInterface $slugger
+     * @param EntityManagerInterface $em
      *
      * @return Response
      */
-    public function create(FormFactoryInterface $factory, CategoryRepository $categoryRepository): Response
+    public function create(
+        FormFactoryInterface $factory,
+//        CategoryRepository $categoryRepository
+        Request $request,
+        SluggerInterface $slugger,
+        EntityManagerInterface $em
+    ): Response
     {
-        $builder = $factory->createBuilder();
+//        $builder = $factory->createBuilder(FormType::class, null, [
+//            'data_class' => Product::class
+//        ]);
+//
+//        $builder
+//            ->add('name', TextType::class, [
+//                'label' => 'Nom du produit',
+//                'attr'  => [
+////                    'class'       => 'form-control',
+//                    'placeholder' => 'Tapez le nom du produit'
+//                ],
+//            ])
+//            ->add('shortDescription', TextareaType::class, [
+//                'label' => 'Description courte',
+//                'attr'  => [
+////                    'class'       => 'form-control',
+//                    'placeholder' => 'Tapez une description courte'
+//                ],
+//            ])
+//            ->add('price', MoneyType::class, [
+//                'label' => 'Prix du produit ',
+//                'attr'  => [
+////                    'class'       => 'form-control',
+//                    'placeholder' => 'Tapez le prix du produit en euros.'
+//                ]
+//            ])
+//            ->add('mainPicture', UrlType::class, [
+//                'label' => 'Image du produit ',
+//                'attr'  => [
+////                    'class'       => 'form-control',
+//                    'placeholder' => 'Tapez une URL d\'image'
+//                ]
+//            ])
+////        ;
+//
+////        $options = [];
+////
+////        foreach ($categoryRepository->findAll() as $category) {
+////            $options[$category->getName()] = $category->getId();
+////        }
+//
+////        $builder
+////            ->add('category', ChoiceType::class, [
+////                'label' => 'Catégorie du produit',
+////                'attr'  => [
+////                    'class' => 'form-control'
+////                ],
+////                'placeholder' => '-- Choisir une catégorie --',
+////                'choices' => $options
+////            ])
+//
+//            ->add('category', EntityType::class, [
+//                'label'        => 'Catégorie du produit',
+//                'attr'         => [
+////                    'class' => 'form-control'
+//                ],
+//                'placeholder'  => '-- Choisir une catégorie --',
+//                'class'        => Category::class,
+////              'choice_label' => 'name'
+//                'choice_label' => function (Category $category) {
+//                    return strtoupper($category->getName());
+//                }
+//            ])
+//        ;
 
-        $builder
-            ->add('name', TextType::class, [
-                'label' => 'Nom du produit',
-                'attr'  => [
-                    'class'       => 'form-control',
-                    'placeholder' => 'Tapez le nom du produit'
-                ],
-            ])
-            ->add('shortDescription', TextareaType::class, [
-                'label' => 'Description courte',
-                'attr'  => [
-                    'class'       => 'form-control',
-                    'placeholder' => 'Tapez une description courte'
-                ],
-            ])
-            ->add('price', MoneyType::class, [
-                'label' => 'Prix du produit',
-                'attr'  => [
-                    'class'       => 'form-control',
-                    'placeholder' => 'Tapez le prix du produit en euros.'
-                ]
-            ]);
+        $form = $this->createForm(ProductType::class);
+//        $builder = $factory->createBuilder(ProductType::class);
+//        $form    = $builder->getForm();
 
-        $options = [];
+        $form->handleRequest($request);
 
-        foreach ($categoryRepository->findAll() as $category) {
-            $options[$category->getName()] = $category->getId();
+        if ($form->isSubmitted()) {
+//            $data = $form->getData();
+            $product = $form->getData();
+            $product->setSlug(strtolower($slugger->slug($product->getName())));
+
+//            $product = new Product();
+//            $product->setName($data['name'])
+//                ->setShortDescription($data['shortDescription'])
+//                ->setPrice($data['price'])
+//                ->setCategory($data['category'])
+//            ;
+            $em->persist($product);
+            $em->flush();
+
         }
-
-        $builder
-            ->add('category', ChoiceType::class, [
-                'label' => 'Catégorie du produit',
-                'attr'  => [
-                    'class' => 'form-control'
-                ],
-                'placeholder' => '-- Choisir une catégorie --',
-                'choices' => $options
-            ])
-        ;
-
-        $form = $builder->getForm();
 
         $formView = $form->createView();
 

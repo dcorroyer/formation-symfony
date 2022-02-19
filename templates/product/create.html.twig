@@ -1,5 +1,8 @@
 {% extends 'base.html.twig' %}
 
+{#{% form_theme formView _self %}#}
+{#{% form_theme formView 'bootstrap_4_layout.html.twig' %} - Configuré dans twig.yaml #}
+
 {% block title %}
   Création d'un produit
 {% endblock title %}
@@ -7,6 +10,52 @@
 {% block body %}
   <h1>Nouveau produit</h1>
 
-  {{ form(formView) }}
+{#  {{ form(formView) }}#}
+
+  {{ form_start(formView) }}
+
+  {{ form_errors(formView) }}
+
+{#  {{ form_widget(formView) }}#}
+
+  <div class="row">
+    <div class="col">
+{#      <div class="form-group">#}
+{#        {{ form_label(formView.name) }}#}
+{#        {{ form_widget(formView.name, {'attr': {'class': 'form-control'}}) }}#}
+{#      </div>#}
+
+      {{ form_row(formView.name) }}
+      {{ form_row(formView.price) }}
+    </div>
+    <div class="col">
+      {{ form_row(formView.mainPicture) }}
+      {{ form_row(formView.category) }}
+      {{ form_row(formView.shortDescription) }}
+    </div>
+  </div>
+
+
+{#  {{ form_label(formView.name) }}#}
+{#  {{ form_errors(formView.name) }}#}
+{#  {{ form_widget(formView.name) }}#}
+{#  {{ form_help(formView.name) }}#}
+{#  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cupiditate deserunt, doloremque ducimus in perspiciatis vitae.</p>#}
+
+  <button type="submit" class="btn btn-primary">
+    <i class="fas fa-save"></i>
+    Créer le produit
+  </button>
+
+  {{ form_end(formView) }}
 
 {% endblock body %}
+
+{#{% block form_row %}#}
+{#  <div class="form-group">#}
+{#    {{ form_label(form) }}#}
+{#    {{ form_widget(form, {'attr': {'class': 'form-control'}}) }}#}
+{#    {{ form_help(form) }}#}
+{#    {{ form_errors(form) }}#}
+{#  </div>#}
+{#{% endblock form_row %}#}
