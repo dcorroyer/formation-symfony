@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 //use App\Entity\Category;
-//use App\Entity\Product;
+use App\Entity\Product;
 use App\Form\ProductType;
 use App\Repository\CategoryRepository;
 use App\Repository\ProductRepository;
@@ -17,10 +17,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 //use Symfony\Component\Form\Extension\Core\Type\TextType;
 //use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 //use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
 //use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -164,7 +166,9 @@ class ProductController extends AbstractController
 //            ])
 //        ;
 
-        $form = $this->createForm(ProductType::class);
+        $product = new Product();
+
+        $form = $this->createForm(ProductType::class, $product);
 //        $builder = $factory->createBuilder(ProductType::class);
 //        $form    = $builder->getForm();
 
@@ -172,7 +176,7 @@ class ProductController extends AbstractController
 
         if ($form->isSubmitted()) {
 //            $data = $form->getData();
-            $product = $form->getData();
+//            $product = $form->getData();
             $product->setSlug(strtolower($slugger->slug($product->getName())));
 
 //            $product = new Product();
@@ -184,11 +188,73 @@ class ProductController extends AbstractController
             $em->persist($product);
             $em->flush();
 
+            return $this->redirectToRoute('product_show', [
+                'category_slug' => $product->getCategory()->getSlug(),
+                'slug'          => $product->getSlug()
+            ]);
         }
 
         $formView = $form->createView();
 
         return $this->render('product/create.html.twig', [
+            'formView' => $formView
+        ]);
+    }
+
+    /**
+     * @Route("/admin/product/{id}/edit", name="product_edit")
+     *
+     * @param $id
+     * @param ProductRepository $productRepository
+     * @param Request $request
+     * @param EntityManagerInterface $em
+     * @param UrlGeneratorInterface $urlGenerator
+     *
+     * @return Response
+     */
+    public function edit(
+        $id,
+        ProductRepository $productRepository,
+        Request $request,
+        EntityManagerInterface $em,
+        UrlGeneratorInterface $urlGenerator
+    ): Response
+    {
+        $product = $productRepository->find($id);
+        $form    = $this->createForm(ProductType::class, $product);
+
+//        $form->setData($product);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted()) {
+            //$product = $form->getData();
+
+            $em->flush();
+
+//            $response = new Response();
+//            $url      = $urlGenerator->generate('product_show', [
+//                'category_slug' => $product->getCategory()->getSlug(),
+//                'slug'          => $product->getSlug()
+//            ]);
+////
+////            $response->headers->set('Location', $url);
+////            $response->setStatusCode(302);
+//
+////            $response = new RedirectResponse($url);
+////            return $response;
+//
+//            return $this->redirect($url);
+            return $this->redirectToRoute('product_show', [
+                'category_slug' => $product->getCategory()->getSlug(),
+                'slug'          => $product->getSlug()
+            ]);
+        }
+
+        $formView = $form->createView();
+
+        return $this->render('product/edit.html.twig', [
+            'product'  => $product,
             'formView' => $formView
         ]);
     }
