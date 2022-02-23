@@ -17,13 +17,19 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 //use Symfony\Component\Form\Extension\Core\Type\TextType;
 //use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormFactoryInterface;
-use Symfony\Component\HttpFoundation\RedirectResponse;
+//use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 //use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\String\Slugger\SluggerInterface;
+//use Symfony\Component\Validator\Constraints\Collection;
+//use Symfony\Component\Validator\Constraints\GreaterThan;
+//use Symfony\Component\Validator\Constraints\Length;
+//use Symfony\Component\Validator\Constraints\LessThanOrEqual;
+//use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 //use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -174,7 +180,7 @@ class ProductController extends AbstractController
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted()) {
+        if ($form->isSubmitted() && $form->isValid()) {
 //            $data = $form->getData();
 //            $product = $form->getData();
             $product->setSlug(strtolower($slugger->slug($product->getName())));
@@ -208,7 +214,6 @@ class ProductController extends AbstractController
      * @param ProductRepository $productRepository
      * @param Request $request
      * @param EntityManagerInterface $em
-     * @param UrlGeneratorInterface $urlGenerator
      *
      * @return Response
      */
@@ -216,18 +221,100 @@ class ProductController extends AbstractController
         $id,
         ProductRepository $productRepository,
         Request $request,
-        EntityManagerInterface $em,
-        UrlGeneratorInterface $urlGenerator
+        EntityManagerInterface $em
+//        UrlGeneratorInterface $urlGenerator,
+//        ValidatorInterface $validator
     ): Response
     {
+//        $product = new Product();
+//
+//        $resultat = $validator->validate($product, null, ["Default", "with-price"]);
+//
+//        dd($resultat);
+//        $product->setName("Bonjour")
+//            ->setPrice(80);
+//
+//        $resultat = $validator->validate($product);
+//
+//        if ($resultat->count() > 0) {
+//            dd("Il y a des erreurs", $resultat);
+//        }
+//
+//        dd("Tout va bien");
+
+//        $client = [
+//            'name' => 'Chamla',
+//            'firstname' => 'Lior',
+//            'car' => [
+//                'brand' => 'Hyundai',
+//                'color' => 'Black'
+//            ],
+//        ];
+//
+//        $collection = new Collection([
+//            'name' => new NotBlank([
+//                'message' => "Le nom ne doit pas être null."
+//            ]),
+//            'firstname' => [
+//                new NotBlank([
+//                    'message' => "Le nom ne doit pas être null."
+//                ]),
+//                new Length([
+//                    'min' => 3,
+//                    'minMessage' => "Le prénom doit contenir 3 caractères au minimum."
+//                ]),
+//            ],
+//            'car' => new Collection([
+//                'brand' => new NotBlank([
+//                    'message' => "La marque de la voiture est obligatoire."
+//                ]),
+//                'color' => new NotBlank([
+//                    'message' => "La couleur de la voiture est obligatoire. "
+//                ])
+//            ])
+//        ]);
+//
+//        $resultat1 = $validator->validate($client, $collection);
+//
+//        if ($resultat1->count() > 0) {
+//            dd("Il y a des erreurs", $resultat1);
+//        }
+//
+//        $age = 26;
+//
+//        $resultat2 = $validator->validate($age, [
+//            new LessThanOrEqual([
+//                'value' => 90,
+//                'message' => "L'age doit être inférieur à {{ compared_value }} mais vous avez donné {{ value }}"
+//            ]),
+//            new GreaterThan([
+//                'value' => 0,
+//                'message' => "L'age ne peut pas être négatif, vous avez donné {{ value }}"
+//            ])
+//        ]);
+//
+//        if ($resultat2->count() > 0) {
+//            dd("Il y a des erreurs", $resultat2);
+//        }
+//
+//        dd("Tout va bien");
+
         $product = $productRepository->find($id);
-        $form    = $this->createForm(ProductType::class, $product);
+//        $form    = $this->createForm(ProductType::class, $product, [
+//            'validation_groups' => [
+//                "Default",
+//                "large-name",
+//                "with-price"
+//            ],
+//        ]);
+
+        $form = $this->createForm(ProductType::class, $product);
 
 //        $form->setData($product);
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             //$product = $form->getData();
 
             $em->flush();

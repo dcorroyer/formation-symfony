@@ -18,6 +18,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class ProductType extends AbstractType
 {
@@ -29,6 +30,10 @@ class ProductType extends AbstractType
                 'attr'  => [
                     'placeholder' => 'Tapez le nom du produit'
                 ],
+                'required' => false,
+//                'constraints' => new NotBlank([
+//                    'message' => "Validation dans le formulaire (NotBlank)"
+//                ])
             ])
             ->add('shortDescription', TextareaType::class, [
                 'label' => 'Description courte',
@@ -41,7 +46,8 @@ class ProductType extends AbstractType
                 'attr'  => [
                     'placeholder' => 'Tapez le prix du produit en euros.'
                 ],
-                'divisor' => 100
+                'divisor' => 100,
+                'required' => false
             ])
 //            ->add('price', PriceType::class, [
 //                'label' => 'Prix du produit ',
