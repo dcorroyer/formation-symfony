@@ -64,12 +64,12 @@ class LoginFormAuthenticator extends AbstractGuardAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $providerKey): RedirectResponse
     {
-        return new RedirectResponse('/');
+        return new RedirectResponse("/");
     }
 
-    public function start(Request $request, AuthenticationException $authException = null)
+    public function start(Request $request, AuthenticationException $authException = null): RedirectResponse
     {
-        // todo
+        return new RedirectResponse("/login");
     }
 
     public function supportsRememberMe()
