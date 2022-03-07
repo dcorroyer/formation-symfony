@@ -29,14 +29,29 @@ class CartService
         $this->productRepository = $productRepository;
     }
 
+    /**
+     * @return array
+     */
     protected function getCart(): array
     {
         return $this->session->get('cart', []);
     }
 
+    /**
+     * @param array $cart
+     * @return mixed
+     */
     protected function setCart(array $cart)
     {
         return $this->session->set('cart', $cart);
+    }
+
+    /**
+     * blablabla
+     */
+    public function empty()
+    {
+        $this->setCart([]);
     }
 
     /**
@@ -122,7 +137,7 @@ class CartService
     }
 
     /**
-     * @return array
+     * @return CartItem[]
      */
     public function getDetailedCartItems(): array
     {

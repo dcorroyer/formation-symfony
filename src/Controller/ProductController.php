@@ -61,7 +61,7 @@ class ProductController extends AbstractController
     }
 
     /**
-     * @Route("/{category_slug}/{slug}", name="product_show")
+     * @Route("/{category_slug}/{slug}", name="product_show", priority=-1)
      *
      * @param ProductRepository $productRepository
      * @param $slug
