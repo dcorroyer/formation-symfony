@@ -26,10 +26,7 @@ class PurchasePaymentController extends AbstractController
 
         $intent = PaymentIntent::create([
             'amount'   => $purchase->getTotal(),
-            'currency' => 'eur',
-            'automatic_payment_methods' => [
-                'enabled' => true,
-            ],
+            'currency' => 'eur'
         ]);
 
         return $this->render('purchase/payment.html.twig', [
