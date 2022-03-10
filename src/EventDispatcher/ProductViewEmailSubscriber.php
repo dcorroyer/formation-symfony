@@ -3,10 +3,10 @@
 namespace App\EventDispatcher;
 
 use Psr\Log\LoggerInterface;
-use App\Event\PurchaseSuccessEvent;
+use App\Event\ProductViewEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class PurchaseSuccessEmailSubscriber implements EventSubscriberInterface
+class ProductViewEmailSubscriber implements EventSubscriberInterface
 {
     /**
      * @return array
@@ -14,7 +14,7 @@ class PurchaseSuccessEmailSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            'purchase.success' => 'sendSuccessEmail'
+            'product.view' => 'sendEmail'
         ];
     }
 
@@ -33,8 +33,8 @@ class PurchaseSuccessEmailSubscriber implements EventSubscriberInterface
         $this->logger = $logger;
     }
 
-    public function sendSuccessEmail(PurchaseSuccessEvent $purchaseSuccessEvent)
+    public function sendEmail(ProductViewEvent $productViewEvent)
     {
-        $this->logger->info("Email envoyé pour la commande n. " . $purchaseSuccessEvent->getPurchase()->getId());
+        $this->logger->info("Email envoyé pour le produit n. " . $productViewEvent->getProduct()->getId());
     }
 }

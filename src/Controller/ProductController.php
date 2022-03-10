@@ -5,31 +5,33 @@ namespace App\Controller;
 //use App\Entity\Category;
 use App\Entity\Product;
 use App\Form\ProductType;
-use App\Repository\CategoryRepository;
+use App\Event\ProductViewEvent;
 use App\Repository\ProductRepository;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\CategoryRepository;
 //use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Doctrine\ORM\EntityManagerInterface;
 //use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 //use Symfony\Component\Form\Extension\Core\Type\FormType;
 //use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 //use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 //use Symfony\Component\Form\Extension\Core\Type\TextType;
 //use Symfony\Component\Form\Extension\Core\Type\UrlType;
-use Symfony\Component\Form\FormFactoryInterface;
-//use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+//use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
-//use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+//use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 //use Symfony\Component\Validator\Constraints\Collection;
 //use Symfony\Component\Validator\Constraints\GreaterThan;
 //use Symfony\Component\Validator\Constraints\Length;
 //use Symfony\Component\Validator\Constraints\LessThanOrEqual;
 //use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 //use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -71,9 +73,10 @@ class ProductController extends AbstractController
     public function show(
         ProductRepository $productRepository,
 //        UrlGeneratorInterface $urlGenerator,
-        $slug
+        $slug,
         // $category_slug,
         // Request $request
+        EventDispatcherInterface $dispatcher
     ): Response
     {
         $product = $productRepository->findOneBy([
@@ -83,6 +86,9 @@ class ProductController extends AbstractController
         if (!$product) {
             throw $this->createNotFoundException("Le produit demandé n'existe pas!");
         }
+
+        $productEvent = new ProductViewEvent($product);
+        $dispatcher->dispatch($productEvent, 'product.view');
 
         return $this->render('product/show.html.twig', [
             'slug'         => $slug,
