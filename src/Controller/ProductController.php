@@ -71,7 +71,10 @@ class ProductController extends AbstractController
     public function show(
         ProductRepository $productRepository,
 //        UrlGeneratorInterface $urlGenerator,
-        $slug): Response
+        $slug
+        // $category_slug,
+        // Request $request
+    ): Response
     {
         $product = $productRepository->findOneBy([
             'slug' => $slug
