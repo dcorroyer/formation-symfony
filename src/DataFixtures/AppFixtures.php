@@ -63,7 +63,7 @@ class AppFixtures extends Fixture
 
             $category
                 ->setName($faker->department())
-                ->setSlug(strtolower($this->slugger->slug($category->getName())))
+                // ->setSlug(strtolower($this->slugger->slug($category->getName())))
             ;
 
             $manager->persist($category);
@@ -74,7 +74,7 @@ class AppFixtures extends Fixture
                 $product
                     ->setName($faker->productName())
                     ->setPrice($faker->price(1000, 25000))
-                    ->setSlug(strtolower($this->slugger->slug($product->getName())))
+                    // ->setSlug(strtolower($this->slugger->slug($product->getName())))
                     ->setShortDescription($faker->paragraph())
                     ->setMainPicture($faker->imageUrl(400, 400, true))
                     ->setCategory($category)
